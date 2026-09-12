@@ -1,17 +1,25 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE } from '../api/config';
 import { CheckCircle, XCircle, Search } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+interface Recommendation {
+  id: number;
+  title: string;
+  description: string;
+  expected_impact: string;
+  revenue_impact: number;
+  confidence: number;
+}
 
 function Recommendations() {
   const { data: recs, isLoading } = useQuery({
     queryKey: ['recs'],
-    queryFn: async () => (await axios.get(`${API_BASE}/governance/recommendations`)).data
+    queryFn: async (): Promise<Recommendation[]> => (await axios.get(`${API_BASE}/governance/recommendations`)).data
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="p-8 text-slate-500">Loading Recommendations...</div>;
 
   return (
     <div className="space-y-8">
@@ -21,7 +29,7 @@ function Recommendations() {
       </header>
 
       <div className="grid grid-cols-1 gap-6">
-        {recs?.map(rec => (
+        {recs?.map((rec) => (
           <div key={rec.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
             <div className="space-y-4">
               <div>

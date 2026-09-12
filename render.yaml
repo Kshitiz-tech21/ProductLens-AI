@@ -1,10 +1,4 @@
 services:
-  - type: database
-    name: productlens-db
-    plan: free
-    databaseName: productlens
-    user: productlens_user
-
   - type: web
     name: productlens-backend
     runtime: python
@@ -21,19 +15,23 @@ services:
         value: demo
       - key: SECRET_KEY
         generateValue: true
-      - key: CORS_ORIGINS
-        value: "http://localhost:5173" # Will be updated with frontend URL after deployment
 
   - type: web
     name: productlens-frontend
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: productlens-backend
-          type: web
-          property: host
+        sync: false # Must be set manually or updated after backend is provisioned
+
+databases:
+  - name: productlens-db
+    plan: free
+    databaseName: productlens
+    user: productlens_user

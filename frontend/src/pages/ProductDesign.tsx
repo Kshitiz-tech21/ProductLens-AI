@@ -1,17 +1,24 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE } from '../api/config';
 import { User, ArrowRight } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+interface Persona {
+  id: number;
+  name: string;
+  age: number;
+  description: string;
+  pain_points: string;
+}
 
 function ProductDesign() {
   const { data: personas, isLoading } = useQuery({
     queryKey: ['personas'],
-    queryFn: async () => (await axios.get(`${API_BASE}/design/personas`)).data
+    queryFn: async (): Promise<Persona[]> => (await axios.get(`${API_BASE}/design/personas`)).data
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="p-8 text-slate-500">Loading Personas...</div>;
 
   return (
     <div className="space-y-8">
@@ -21,7 +28,7 @@ function ProductDesign() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {personas?.map(p => (
+        {personas?.map((p) => (
           <div key={p.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="bg-brand-100 p-3 rounded-full text-brand-600">

@@ -1,17 +1,22 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE } from '../api/config';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const API_BASE = 'http://localhost:8000/api';
+interface VOCData {
+  category: string;
+  count: number;
+  negative_ratio: number;
+}
 
 function VOC() {
   const { data, isLoading } = useQuery({
     queryKey: ['voc'],
-    queryFn: async () => (await axios.get(`${API_BASE}/dashboard/voc/summary`)).data
+    queryFn: async (): Promise<VOCData[]> => (await axios.get(`${API_BASE}/dashboard/voc/summary`)).data
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="p-8 text-slate-500">Loading VOC Intelligence...</div>;
 
   return (
     <div className="space-y-8">
