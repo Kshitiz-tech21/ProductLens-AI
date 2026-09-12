@@ -1,0 +1,39 @@
+services:
+  - type: database
+    name: productlens-db
+    plan: free
+    databaseName: productlens
+    user: productlens_user
+
+  - type: web
+    name: productlens-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: productlens-db
+          property: connectionString
+      - key: AI_PROVIDER
+        value: demo
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "http://localhost:5173" # Will be updated with frontend URL after deployment
+
+  - type: web
+    name: productlens-frontend
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: productlens-backend
+          type: web
+          property: host

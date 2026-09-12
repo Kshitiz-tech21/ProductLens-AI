@@ -6,7 +6,16 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const API_BASE = 'http://localhost:8000/api';
 
-const KPICard = ({ label, value, diff, isPositive }) => (
+interface KPIValue {
+  value: number;
+  diff: number;
+}
+
+interface Summary {
+  [key: string]: KPIValue;
+}
+
+const KPICard = ({ label, value, diff, isPositive }: { label: string; value: string; diff: number; isPositive: boolean }) => (
   <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
     <p className="text-sm font-medium text-slate-500">{label}</p>
     <div className="flex items-baseline gap-2 mt-2">
@@ -22,15 +31,17 @@ const KPICard = ({ label, value, diff, isPositive }) => (
 function Dashboard() {
   const { data: summary, isLoading } = useQuery({
     queryKey: ['summary'],
-    queryFn: async () => (await axios.get(`${API_BASE}/dashboard/summary`)).data
+    queryFn: async (): Promise<Summary> => (await axios.get(`${API_BASE}/dashboard/summary`)).data
   });
 
-  if (isLoading) return <div className="animate-pulse space-y-4">
-    <div className="h-32 bg-slate-200 rounded-xl w-full" />
-    <div className="grid grid-cols-4 gap-4">
-      {[1,2,3,4].map(i => <div key={i} className="h-32 bg-slate-200 rounded-xl" />)}
+  if (isLoading) return (
+    <div className="animate-pulse space-y-4">
+      <div className="h-32 bg-slate-200 rounded-xl w-full" />
+      <div className="grid grid-cols-4 gap-4">
+        {[1,2,3,4].map(i => <div key={i} className="h-32 bg-slate-200 rounded-xl" />)}
+      </div>
     </div>
-  </div>;
+  );
 
   return (
     <div className="space-y-8">
@@ -40,13 +51,13 @@ function Dashboard() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {summary && Object.entries(summary).map(([key, { value, diff }]) => (
+        {summary && Object.entries(summary).map(([key, data]) => (
           <KPICard 
             key={key} 
             label={key} 
-            value={typeof value === 'number' && value > 1000 ? `₹${(value/100000).toFixed(1)}L` : value.toFixed(1) + '%'} 
-            diff={diff} 
-            isPositive={diff > 0} 
+            value={typeof data.value === 'number' && data.value > 1000 ? `₹${(data.value/100000).toFixed(1)}L` : data.value.toFixed(1) + '%'} 
+            diff={data.diff} 
+            isPositive={data.diff > 0} 
           />
         ))}
       </div>

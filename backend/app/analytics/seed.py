@@ -9,6 +9,11 @@ from ..models.database import (
 from ..models.product_design import Persona, UserJourney
 
 def generate_synthetic_data(db: Session, scale_factor=1):
+    # Idempotency check: don't seed if customers already exist
+    if db.query(Customer).first():
+        print("Database already seeded. Skipping...")
+        return
+
     # Scale seeds
     num_customers = int(1000 * scale_factor)
     num_orders = int(2000 * scale_factor)
@@ -162,9 +167,8 @@ def generate_synthetic_data(db: Session, scale_factor=1):
     metrics = ['MAU', 'DAU', 'Revenue', 'Conversion', 'Retention', 'Churn']
     for m in metrics:
         for d in range(30):
-            # Introduce an anomaly in conversion
             val = random.uniform(10, 100) if m != 'Revenue' else random.uniform(10000, 50000)
-            if m == 'Conversion' and d < 3: # Last 3 days are low
+            if m == 'Conversion' and d < 3:
                 val = val * 0.7
             db.add(KPISnapshot(
                 metric_name=m,
@@ -197,5 +201,4 @@ def generate_synthetic_data(db: Session, scale_factor=1):
         description="User can retry payment without restarting checkout"
     ))
     db.commit()
-
     print("Data seeding complete!")
