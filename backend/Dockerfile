@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir numpy==1.26.4 pandas==2.2.1 scipy==1.12.0 scikit-learn==1.4.1.post1 && \
+    pip install --no-cache-dir --no-deps langchain-core==0.2.43 langgraph==0.0.69 langchain==0.2.0 langchain-openai==0.1.0 && \
+    pip install --no-cache-dir fastapi==0.110.0 uvicorn==0.27.1 sqlalchemy==2.0.27 psycopg2-binary==2.9.9 pydantic==2.6.1 pydantic-settings==2.2.1 python-multipart==0.0.9
 
 COPY . .
 
