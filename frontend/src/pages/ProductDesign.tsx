@@ -1,0 +1,59 @@
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { User, ArrowRight } from 'lucide-react';
+
+const API_BASE = 'http://localhost:8000/api';
+
+function ProductDesign() {
+  const { data: personas, isLoading } = useQuery({
+    queryKey: ['personas'],
+    queryFn: async () => (await axios.get(`${API_BASE}/design/personas`)).data
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div className="space-y-8">
+      <header>
+        <h2 className="text-3xl font-bold text-slate-900">Product Design</h2>
+        <p className="text-slate-500">User personas and journey mapping</p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {personas?.map(p => (
+          <div key={p.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="bg-brand-100 p-3 rounded-full text-brand-600">
+                <User size={32} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">{p.name}, {p.age}</h3>
+                <p className="text-sm text-slate-500">{p.description}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Pain Points</h4>
+                <p className="text-sm text-slate-600">{p.pain_points}</p>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-400 uppercase mb-3">Ideal Journey</h4>
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                  <span>Search</span> <ArrowRight size={12} /> 
+                  <span>Cart</span> <ArrowRight size={12} /> 
+                  <span>Checkout</span> <ArrowRight size={12} /> 
+                  <span className="text-brand-600 font-bold">Payment Retry</span> <ArrowRight size={12} /> 
+                  <span className="text-emerald-600 font-bold">Success</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default ProductDesign;
