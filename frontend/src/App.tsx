@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   BarChart3, 
@@ -43,46 +43,44 @@ const navigation: NavItem[] = [
 
 function App() {
   return (
-    <Router>
-      <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-          <div className="p-6 border-b border-slate-100">
-            <div className="flex items-center gap-2 text-brand-600 font-black text-xl tracking-tight">
-              <BrainCircuit size={28} />
-              <span>ProductLens AI</span>
-            </div>
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-2 text-brand-600 font-black text-xl tracking-tight">
+            <BrainCircuit size={28} />
+            <span>ProductLens AI</span>
           </div>
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navigation.map((item) => (
-              <Link 
-                key={item.to} 
-                to={item.to} 
-                className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-all"
-              >
-                <item.icon size={18} />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </aside>
+        </div>
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {navigation.map((item) => (
+            <Link 
+              key={item.to} 
+              to={item.to} 
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-all"
+            >
+              <item.icon size={18} />
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </aside>
 
-        <main className="flex-1 overflow-y-auto p-8">
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/ai-analyst" element={<AIAnalyst />} />
-            <Route path="/customer-intelligence" element={<VOC />} />
-            <Route path="/prioritization" element={<Prioritization />} />
-            <Route path="/experiments" element={<Experiments />} />
-            <Route path="/recommendations" element={<Recommendations />} />
-            <Route path="/prd" element={<PRD />} />
-            <Route path="/product-design" element={<ProductDesign />} />
-            <Route path="/settings" element={<div className="text-2xl font-bold">Settings</div>} />
-            <Route path="/" element={<Dashboard />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+      <main className="flex-1 overflow-y-auto p-8">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/ai-analyst" element={<AIAnalyst />} />
+          <Route path="/customer-intelligence" element={<VOC />} />
+          <Route path="/prioritization" element={<Prioritization />} />
+          <Route path="/experiments" element={<Experiments />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+          <Route path="/prd" element={<PRD />} />
+          <Route path="/product-design" element={<ProductDesign />} />
+          <Route path="/settings" element={<div className="text-2xl font-bold">Settings</div>} />
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 
