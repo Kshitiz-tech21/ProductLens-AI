@@ -9,6 +9,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
+      - key: BUILD_ID
+        value: "v1-strict-pins"
       - key: DATABASE_URL
         fromDatabase:
           name: productlens-db
