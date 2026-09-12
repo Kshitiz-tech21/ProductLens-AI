@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { API_BASE } from '../api/config';
-import { User, ArrowRight } from 'lucide-react';
+import { User, ArrowRight, AlertCircle, RefreshCcw } from 'lucide-react';
 
 interface Persona {
   id: number;
@@ -12,13 +12,44 @@ interface Persona {
   pain_points: string;
 }
 
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+  <div className="flex flex-col items-center justify-center p-12 text-center space-y-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div className="p-3 bg-rose-100 text-rose-600 rounded-full">
+      <AlertCircle size={32} />
+    </div>
+    <div>
+      <h3 className="text-lg font-bold text-slate-900">Failed to load data</h3>
+      <p className="text-slate-500">We couldn't retrieve the personas. This might be a temporary network issue.</p>
+    </div>
+    <button 
+      onClick={onRetry}
+      className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
+    >
+      <RefreshCcw size={16} /> Retry Request
+    </button>
+  </div>
+);
+
 function ProductDesign() {
-  const { data: personas, isLoading } = useQuery({
+  const { data: personas, isLoading, isError, refetch } = useQuery({
     queryKey: ['personas'],
     queryFn: async (): Promise<Persona[]> => (await axios.get(`${API_BASE}/design/personas`)).data
   });
 
-  if (isLoading) return <div className="p-8 text-slate-500">Loading Personas...</div>;
+  if (isLoading) {
+    return (
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 bg-slate-200 rounded-lg w-1/4 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {[1,2].map(i => (
+            <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 h-64" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) return <ErrorState onRetry={() => refetch()} />;
 
   return (
     <div className="space-y-8">
