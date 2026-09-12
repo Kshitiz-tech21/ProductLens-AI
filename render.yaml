@@ -4,13 +4,13 @@ services:
     runtime: python
     plan: free
     rootDir: backend
-    buildCommand: pip install numpy==1.26.4 pandas==2.2.1 scipy==1.12.0 scikit-learn==1.4.1.post1 && pip install -r requirements.txt
+    buildCommand: pip install numpy==1.26.4 pandas==2.2.1 scipy==1.12.0 scikit-learn==1.4.1.post1 && pip install --no-deps langchain-core==0.2.43 langgraph==0.0.69 langchain==0.2.0 langchain-openai==0.1.0 && pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
       - key: BUILD_ID
-        value: "v2-explicit-install"
+        value: "v3-no-deps-ai"
       - key: DATABASE_URL
         fromDatabase:
           name: productlens-db
